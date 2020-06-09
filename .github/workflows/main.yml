@@ -9,12 +9,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Running Python unittest
-            run: |
+              run: |
                 echo running python tests!
 
     deploy:
         runs-on: ubuntu-latest
         steps:
             - name: Deploying to AWS
-            run: |
+              run: |
                 echo deploying serverless app
