@@ -35,13 +35,14 @@ class TestHttpOperation(unittest.TestCase):
 class TestDynamoDbOperation(unittest.TestCase):
     ddb = None
     db_endpoint = "http://localhost:8000" # testing against local dynamodb
+    db_regions = "us-east-1" # testing against local dynamodb
     table_name = "crc_visits_test"
 
     # Class method so that it runs only once (unlike setUp does for each test)
     @classmethod
     def setUpClass(cls):
         # Setup database
-        cls.ddb = boto3.resource('dynamodb', endpoint_url=cls.db_endpoint)
+        cls.ddb = boto3.resource('dynamodb', endpoint_url=cls.db_endpoint, region_name=aws_region)
         
         # Create test table
         try:
