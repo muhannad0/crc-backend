@@ -1,0 +1,75 @@
+service: crc-backend
+
+custom:
+  tableName: 'crc_visits_${self:provider.stage}'
+
+provider:
+  name: aws
+  endpointType: REGIONAL
+  runtime: python3.8
+  region: us-east-1
+  stage: ${opt:stage,'dev'}
+
+  memorySize: 128
+  timeout: 5
+  
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        Fn::GetAtt:
+          - visitsTable
+          - Arn
+
+  environment:
+    VISITS_TABLE: ${self:custom.tableName}
+    LAMBDA_AWS_REGION: ${self:provider.region}
+
+package:
+  exclude:
+    - py-lambdafunc/**
+  include: 
+    - py-lambdafunc/visits.py
+
+functions:
+  visits:
+    handler: py-lambdafunc/visits.lambda_handler
+    events:
+      - http:
+          path: visit
+          method: post
+          cors: true
+
+      - http:
+          path: visit/{website}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                website: true
+
+resources:
+  Resources:
+    visitsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - 
+            AttributeName: site
+            AttributeType: S
+        KeySchema:
+          - 
+            AttributeName: site
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
