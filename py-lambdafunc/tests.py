@@ -42,7 +42,7 @@ class TestDynamoDbOperation(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Setup database
-        cls.ddb = boto3.resource('dynamodb', endpoint_url=cls.db_endpoint, region_name=db_aws_region)
+        cls.ddb = boto3.resource('dynamodb', endpoint_url=cls.db_endpoint, region_name=cls.db_aws_region)
         
         # Create test table
         try:
