@@ -1,3 +1,4 @@
+import os
 import boto3
 from botocore.exceptions import ClientError
 import visits
@@ -35,14 +36,20 @@ class TestHttpOperation(unittest.TestCase):
 class TestDynamoDbOperation(unittest.TestCase):
     ddb = None
     db_endpoint = "http://localhost:8000" # testing against local dynamodb
-    db_aws_region = "us-east-1" # testing against local dynamodb
+    db_aws_region = os.getenv('AWS_DEFAULT_REGION', 'us-east-1')
+    db_aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID', 'foo')
+    db_aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY', 'bar')
     table_name = "crc_visits_test"
 
     # Class method so that it runs only once (unlike setUp does for each test)
     @classmethod
     def setUpClass(cls):
         # Setup database
-        cls.ddb = boto3.resource('dynamodb', endpoint_url=cls.db_endpoint, region_name=cls.db_aws_region)
+        cls.ddb = boto3.resource('dynamodb', 
+                    endpoint_url=cls.db_endpoint, 
+                    region_name=cls.db_aws_region,
+                    aws_access_key_id=cls.db_aws_access_key_id,
+                    aws_secret_access_key=cls.db_aws_secret_access_key)
         
         # Create test table
         try:
