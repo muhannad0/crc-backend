@@ -34,6 +34,9 @@ provider:
 
 package:
   exclude:
+    - node_modules/**
+    - .git/**
+    - .gitignore
     - py-lambdafunc/**
   include: 
     - py-lambdafunc/visits.py
