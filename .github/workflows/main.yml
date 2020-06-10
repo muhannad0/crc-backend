@@ -30,9 +30,16 @@ jobs:
         needs: test
         steps:
             - uses: actions/checkout@v2
-            - name: Install npm dependencies
-              run: |
-                npm install
-            - name: Serverless to AWS
-              run: |
-                echo deploying serverless app
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                node-version: 12.x
+              run: npm ci
+            - name: Serverless Deploy
+              uses: serverless/github-action@master
+              with:
+                args: --stage prod deploy
+              env:
+                AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                AWS_DEFAULT_REGION: us-east-1
