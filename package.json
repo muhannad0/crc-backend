@@ -1,0 +1,20 @@
+{
+  "name": "crc-backend",
+  "version": "1.0.0",
+  "description": "## Introduction This is a simple website visit counter backend built using Python3. It's configured to run on AWS Lambda, using API Gateway to provide an API endpoint and DynamoDB to store counter data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muhannad0/crc-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muhannad0/crc-backend/issues"
+  },
+  "homepage": "https://github.com/muhannad0/crc-backend#readme"
+}
