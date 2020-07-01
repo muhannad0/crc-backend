@@ -48,13 +48,13 @@ package:
     - .github/**
 
 functions:
-  hello:
-    handler: handler.hello
-    events:
-      - http:
-          path: hello
-          method: get
-          cors: true
+  # hello:
+  #   handler: handler.hello
+  #   events:
+  #     - http:
+  #         path: hello
+  #         method: get
+  #         cors: true
   # add_site:
   #   handler: handler.add_site
   #   events:
