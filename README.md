@@ -7,74 +7,31 @@ The whole stack can be deployed using the [Serverless Framework](https://www.ser
 
 ## Requirements
 + Serverless Framework
-
+    
     You can follow this guide for installation, [Serverless Framework: Getting Started](https://www.serverless.com/framework/docs/getting-started/).
 
++ Serverless Plugins:
+    + [Serverless Offline](https://www.npmjs.com/package/serverless-offline)
+    + [Serverless DynamoDB Local](https://www.npmjs.com/package/serverless-dynamodb-local)
+
 + Python 3
-+ DynamoDB local installation
-
-    I recommend using a Docker image to run DynamoDB for local development. You can find instructions to set it up on [Docker Hub](https://hub.docker.com/r/amazon/dynamodb-local/).
-
 + AWS credentials configured
 
-## Deploying to AWS
-+ In order to deploy this stack use:
+## Development Setup
+### Serverless Framework
++ Install the required packages.
 ```
-serverless deploy --stage prod
+npm install
 ```
-*Note: If `--stage` variable is not provided a `dev` stage will be deployed by default.*
-
-## Usage
-+ The app has 2 API endpoints:
-    + **GET Method**
-        
-        `https://<api-endpoint>/visit/{website}`
-        
-        For example:
-        
-        `https://<api-endpoint>/visit/example.com`
-        
-        Would return:
-        ```
-        {
-            "code": "Success",
-            "data": {
-                "last_updated": 1591695923,
-                "counter": 2,
-                "site": "example.com"
-            }
-        }
-        ```
-
-    + **POST Method**
-        
-        `https://<api-endpoint>/visit`
-
-        Use the following JSON body syntax:
-        
-        ```
-        { "website": "example.com" }
-        ```
-
-        Would return:
-        ```
-        {
-            "code": "Success",
-            "data": {
-                "last_updated": 1591733636,
-                "counter": 3
-            }
-        }
-        ```
-
-## Python Code and Testing
-The Python code for the Lambda can be run locally and tested using `unittest`.
-
-To work on the Python code:
-+ Create a Python virtual environmnet.
++ Install Serverless DynamoDB Local.
 ```
-cd py-lambdafunc/
+sls dynamodb install
+```
 
+### Python Code
+#### Developing the backend.
++ Create a Python virtual environment.
+```
 # create the environment
 python3 -m venv env
 
@@ -89,28 +46,105 @@ source env/bin/activate
 ```
 
 
-To run tests:
-+ Start a local DynamoDB instance using Docker.
-```
-docker container run --rm -d -p 8000:8000 --name dynamodblocal amazon/dynamodb-local
-```
+#### Unit Testing
+Tests are run using `unittest`. [Moto](https://github.com/spulec/moto) is used to emulate AWS resources such as DynamoDB.
 
 + Activate the environment.
 ```
-cd py-lambdafunc/
 source env/bin/activate
 (env)
 ```
 + Run the tests.
 ```
-(env) python -m unittest tests.py
+(env) python -m unittest discover tests/
 ...
 (env)
 ----------------------------------------------------------------------
-Ran 9 tests in 1.193s
+Ran 11 tests in 0.853s
 
 OK
 ```
 
+### Local Integration Testing
++ Start the local API server, Lambda runtime and DynamoDB instance.
+```
+sls offline start
+```
+
+You can make API calls to the local URLs using a tool such as [Postman](https://www.postman.com/).
+
+
+## Deploying to AWS
++ In order to deploy this stack use:
+```
+serverless deploy --stage prod
+```
+*Note: If `--stage` variable is not provided a `dev` stage will be deployed by default.*
+
+## API Reference
++ The app has 3 API endpoints:
+    + **GET Method**
+        
+        `https://<api-endpoint>/site/{website}`
+        
+        Returns details of a single site.
+        
+        For example:
+        
+        `https://<api-endpoint>/site/example.com`
+        
+        Would return:
+        ```
+        {
+            "last_updated": 1593625162,
+            "site": "example.com",
+            "counter": 1
+        }
+        ```
+
+        `https://<api-endpoint>/sites/`
+
+        Returns details of all saved sites.
+
+        Would return:
+        ```
+        [
+            {
+                "last_updated": 1593625214,
+                "site": "example.net",
+                "counter": 1
+            },
+            {
+                "last_updated": 1593625162,
+                "site": "example.com",
+                "counter": 1
+            }
+        ]
+
+        ```
+
+    + **POST Method**
+        
+        `https://<api-endpoint>/site`
+        
+        Saves site and returns details.
+
+        Use the following JSON body syntax:
+        
+        ```
+        { "website": "example.com" }
+        ```
+
+        Would return:
+        ```
+        {
+            "last_updated": 1593625162,
+            "site": "example.com",
+            "counter": 1
+        }
+        ```
+
 ## References
-I wrote about how I attempted to build this on my [blog](#).
+I wrote about how I attempted to build this on my [blog](https://muhannad0.github.io/post/phase3-build-site-visit-counter-apigateway-lambda-dynamodb-cloudresumechallenge/).
+
+*Note: The above post explains the first version of this app. However, this new version has been refactored to make the code more readable, enable faster and seamless local development and better test coverage.*
