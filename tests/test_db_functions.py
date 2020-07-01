@@ -4,7 +4,7 @@ import unittest
 import boto3
 from moto import mock_dynamodb2
 
-from .ddb_config import ddb_init
+from ddb_config import ddb_init
 
 @mock_dynamodb2
 class TestDatabaseFunctions(unittest.TestCase):
@@ -18,7 +18,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         """Creates the database and table"""
         self.ddb, self.ddb_table = ddb_init()
     
-   def tearDown(self):
+    def tearDown(self):
         self.ddb_table.delete()
         self.ddb = None
 

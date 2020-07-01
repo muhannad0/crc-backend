@@ -4,7 +4,7 @@ import unittest
 import boto3
 from moto import mock_dynamodb2
 
-from .ddb_config import ddb_init
+from ddb_config import ddb_init
 
 @mock_dynamodb2
 class TestHandlerFunction(unittest.TestCase):
@@ -88,4 +88,4 @@ class TestHandlerFunction(unittest.TestCase):
         self.assertIn('body', res)
         self.assertEqual(200, res['statusCode'])
         self.assertIn('Access-Control-Allow-Origin', res['headers'])
-        self.assertEqual(2, json.loads(res['body'])['counter']) # should return 2 for counter value
+        self.assertEqual(json.loads(res['body'])['counter'], 2) # should return 2 for counter value
