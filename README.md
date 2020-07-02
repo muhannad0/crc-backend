@@ -39,7 +39,7 @@ python3 -m venv env
 source env/bin/activate
 
 # install the packages
-(env) pip -r requirements.txt
+(env) pip -r requirements-dev.txt
 
 # deactivate the environment once done
 (env) deactivate
