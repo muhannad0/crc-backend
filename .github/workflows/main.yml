@@ -1,4 +1,4 @@
-name: Backend Deployment
+name: Deploy
 
 on:
     push:
@@ -7,24 +7,15 @@ on:
 jobs:
     test:
         runs-on: ubuntu-latest
-        env:
-            working-directory: ./py-lambdafunc
         steps:
             - uses: actions/checkout@v2
             - name: Install dependencies
               run: |
-                pip3 install -r requirements.txt
-              working-directory: ${{env.working-directory}}
-            - name: Setup local DynamoDB
-              uses: rrainn/dynamodb-action@v2.0.0
-              with:
-                port: 8000
-                cors: '*'
-            - name: Running Python unittest
-              run: |
-                python3 -m unittest tests.py
-              working-directory: ${{env.working-directory}}
-
+                pip3 install --upgrade setuptools
+                pip3 install -r requirements-dev.txt
+            - name: Run Python unittest
+              run: python3 -m unittest discover tests/
+              
     deploy:
         runs-on: ubuntu-latest
         needs: test
