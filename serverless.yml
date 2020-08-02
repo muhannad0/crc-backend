@@ -92,6 +92,7 @@ resources:
   Resources:
     VisitsTable:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
       Properties:
         TableName: ${self:provider.environment.VISITS_TABLE}
         AttributeDefinitions:
